@@ -1,0 +1,2 @@
+MMSI,BaseDateTime,LAT,LON,SOG,COG,Heading,VesselName,IMO,CallSign,VesselType,neighbor_MMSI,neighbor_BaseDateTime,neighbor_ship_latitude,neighbor_ship_longitude,neighbor_ship_SOG,neighbor_ship_COG,neighbor_ship_Heading,neighbor_ship_name,neighbor_ship_IMO,neighbor_ship_CallSign,neighbor_ship_VesselType,distance
+319121000,2022-03-31 02:28:39,29.74865,-95.0989,6.3,44.2,43.0,STOLT SKUA,IMO9199311,ZCPQ2,80.0,366822520,2022-03-31 02:28:39,29.74926,-95.09897,8.7,223.9,511.0,PACK MULE,IMO0000000,WDK4019,60.0,68.16471625276924
