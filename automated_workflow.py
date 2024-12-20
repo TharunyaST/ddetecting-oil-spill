@@ -1,62 +1,34 @@
-import subprocess
+from extraction import extract_date , modify_path
+from subnetprocessing import subnet_processing
+from detection import detection
+from locextrcation import location_extraction
+from weatherapi import weather_api
+from weatherdataexytraction import weather_data_extraction
+from bbox import bbox
+from datetime import datetime
 
-# Step 1: Run model.py
-try:
-    print("Running model.py...")
-    subprocess.run(["python", "intergration\model.py"], check=True)
-    print("Completed model.py.\n")
-except subprocess.CalledProcessError as e:
-    print(f"Error while running model.py: {e}")
-    exit(1)
 
-# Step 2: Run path.py
-try:
-    print("Running path.py...")
-    subprocess.run(["python", "intergration\path.py"], check=True)
-    print("Completed path.py.\n")
-except subprocess.CalledProcessError as e:
-    print(f"Error while running path.py: {e}")
-    exit(1)
+global txtpath
+txtpath="final_results.txt"
 
-# Step 3: Run Researchpaper.py
-try:
-    print("Running Researchpaper.py...")
-    subprocess.run(["python", "intergration\Researchpaper.py"], check=True)
-    print("Completed Researchpaper.py.\n")
-except subprocess.CalledProcessError as e:
-    print(f"Error while running Researchpaper.py: {e}")
-    exit(1)
+target_lat = 33.522823902460985
+target_lon = -117.91402739036569
 
-try:
-    print("Running ais_collision.py...")
-    subprocess.run(["python", r"G:\SIH_FINAL_AIS_SATE\intergration\ais_collision.py"], check=True)
-    print("Completed ais_collision.py.\n")
-except subprocess.CalledProcessError as e:
-    print(f"Error while running ais_collision.py: {e}")
-    exit(1)
+path=r"G:\SIH_FINAL_AIS_SATE\Final_satellite_intergration - Copy\extracted_SAR_data88ff\S1B_IW_GRDH_1SDV_20211003T014927_20211003T014952_028965_0374DA_3EE4.SAFE\measurement\s1b-iw-grd-vv-20211003t014927-20211003t014952-028965-0374da-001.tiff"
+processed_image_path=subnet_processing(path)
 
-try:
-    print("Running merge.py...")
-    subprocess.run(["python", "intergration\merge.py"], check=True)
-    print("Completed merge.py.\n")
-except subprocess.CalledProcessError as e:
-    print(f"Error while running merge.py: {e}")
-    exit(1)
+annotation_path=modify_path(path)
 
-# try:
-#     print("Running test.py...")
-#     subprocess.run(["python", r"G:\SIH_FINAL_AIS_SATE\intergration\test.py"], check=True)
-#     print("Completed test.py.\n")
-# except subprocess.CalledProcessError as e:
-#     print(f"Error while running test.py: {e}")
-#     exit(1)
+processed_cropped_image_path=bbox(processed_image_path,annotation_path,target_lat,target_lon)
 
-try:
-    print("Running satellite.py...")
-    subprocess.run(["python", r"G:\SIH_FINAL_AIS_SATE\Final_satellite_intergration - Copy\ais_sat_intergration.py"], check=True)
-    print("Completed satellite.py.\n")
-except subprocess.CalledProcessError as e:
-    print(f"Error while running satellite.py: {e}")
-    exit(1)
+detection(processed_cropped_image_path)
 
-print("Workflow completed successfully!")
+day,month,year=extract_date(path)
+
+lat1, lon1, lat2, lon2=location_extraction(processed_cropped_image_path,annotation_path)
+
+file_path_grib=weather_api(int(year),int(month),int(day),float(lat1),float(lon1),float(lat2),float(lon2))
+
+target_date=datetime(int(year),int(month),int(day))
+
+weather_data_extraction(target_date,file_path_grib)
